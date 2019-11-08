@@ -59,9 +59,5 @@ class ListActivity : AppCompatActivity() {
         }
 
         model.episodes.observe(this, nameObserver)
-
-        val binding: UserBinding = DataBindingUtil.setContentView(this, R.layout.user)
-
-        binding.setLifecycleOwner(this)
     }
 }
