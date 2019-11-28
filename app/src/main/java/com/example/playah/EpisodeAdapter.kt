@@ -12,8 +12,9 @@ import kotlinx.android.synthetic.main.episode_row.view.*
 
 class EpisodeAdapter(
     private var dataSet: Array<Episode>,
-    private val buttonText: String = "Lägg till i lista",
-    private val onClickListener: (episode: Episode) -> Unit
+    private val buttonText: String,
+    private val addToListOnClickListener: (episode: Episode) -> Unit,
+    private val navigateOnClickListener: (uri: String) -> Unit
 ) :
     RecyclerView.Adapter<EpisodeAdapter.EpisodeViewHolder>() {
     class EpisodeViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -37,13 +38,8 @@ class EpisodeAdapter(
             .load(episode.imageurl)
             .into(holder.view.imageView)
 
-        holder.view.listButton.setOnClickListener {  onClickListener(episode) }
-        holder.view.setOnClickListener {
-            val intent = Intent(context, EpisodeActivity::class.java).apply {
-                putExtra("uri", episode.downloadpodfile.url)
-            }
-            context.startActivity(intent)
-        }
+        holder.view.listButton.setOnClickListener {  addToListOnClickListener(episode) }
+        holder.view.setOnClickListener { navigateOnClickListener(episode.downloadpodfile.url) }
     }
 
     fun updateDataSet(newEpisodes: Array<Episode>) {
