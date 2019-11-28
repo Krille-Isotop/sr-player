@@ -43,7 +43,7 @@ class MainFragment : Fragment() {
             viewManager = LinearLayoutManager(context)
             viewAdapter = EpisodeAdapter(episodes!!, "Lägg till i lista", { episode ->
                 AsyncTask.execute {
-                    val dao = AppDatabase.getInstance(context).userDao()
+                    val dao = AppDatabase.getInstance(context).listItemDao()
                     if (dao.getById(episode.id) == null) {
                         dao.insert(ListItem(episode.id))
                     }

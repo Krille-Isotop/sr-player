@@ -43,7 +43,7 @@ class ListFragment : Fragment() {
                 val moshi = Moshi.Builder().build()
                 val jsonAdapter = moshi.adapter(Episodes::class.java)
                 val episodesFromApi = jsonAdapter.fromJson(response)?.episodes
-                val episodesToInclude = AppDatabase.getInstance(context).userDao().getAll()
+                val episodesToInclude = AppDatabase.getInstance(context).listItemDao().getAll()
 
                 model.episodes.postValue(episodesFromApi?.filter { episode ->
                     episodesToInclude.any { (id) -> id == episode.id }
@@ -54,7 +54,7 @@ class ListFragment : Fragment() {
         viewManager = LinearLayoutManager(context)
         viewAdapter = EpisodeAdapter(model.episodes.value!!, "Ta bort från lista", { episode ->
             AsyncTask.execute {
-                val dao = AppDatabase.getInstance(context).userDao()
+                val dao = AppDatabase.getInstance(context).listItemDao()
                 dao.delete(episode.id)
 
                 model.episodes.postValue(model.episodes.value?.filter { currEp ->
