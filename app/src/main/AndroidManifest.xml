@@ -12,16 +12,14 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name="com.example.playah.ListActivity"></activity>
-        <activity android:name="com.example.playah.BaseActivity" />
-        <activity android:name="com.example.playah.EpisodeActivity" />
-        <activity android:name="com.example.playah.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".BaseActivity" />
     </application>
 
 </manifest>
