@@ -1,22 +1,17 @@
 package com.example.playah.Fragments
 
-
-import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playah.*
-
-import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment() {
@@ -37,29 +32,28 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val context = activity!!.applicationContext
 
-        ApiClient.getEpisodes(context, { response ->
-            val moshi = Moshi.Builder().build()
-            val jsonAdapter = moshi.adapter(Episodes::class.java)
-            val episodes = jsonAdapter.fromJson(response)?.episodes
-            model.episodes.value = episodes
-
-            viewManager = LinearLayoutManager(context)
-            viewAdapter = EpisodeAdapter(episodes!!, "Lägg till i lista", { episode ->
-                AsyncTask.execute {
-                    val dao = AppDatabase.getInstance(context).listItemDao()
-                    if (dao.getById(episode.id) == null) {
-                        dao.insert(ListItem(episode.id))
+        val episodesObserver = Observer<Array<Episode>> { episodes ->
+            if (episodes.size > 0) {
+                viewManager = LinearLayoutManager(context)
+                viewAdapter = EpisodeAdapter(model.episodes.value!!, "Lägg till i lista", { episode ->
+                    AsyncTask.execute {
+                        val dao = AppDatabase.getInstance(context).listItemDao()
+                        if (dao.getById(episode.id) == null) {
+                            dao.insert(ListItem(episode.id))
+                        }
                     }
-                }
-            }, { uri ->
-                findNavController().navigate(MainFragmentDirections.actionMainFragmentToEpisodeFragment(uri))
-            })
+                }, { uri ->
+                    findNavController().navigate(MainFragmentDirections.actionMainFragmentToEpisodeFragment(uri))
+                })
 
-            episodeRecyclerView.apply {
-                layoutManager = viewManager
-                adapter = viewAdapter
+                episodeRecyclerView.apply {
+                    layoutManager = viewManager
+                    adapter = viewAdapter
+                }
             }
-        }, { e -> Log.d("error", e.message) })
+        }
+
+        model.episodes.observe(this, episodesObserver)
 
         goToListButton.setOnClickListener {
             val action = MainFragmentDirections.actionMainFragmentToListFragment()

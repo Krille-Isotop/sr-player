@@ -58,11 +58,11 @@ class ListFragment : Fragment() {
             adapter = viewAdapter
         }
 
-        val nameObserver = Observer<Array<Episode>> { episodes ->
+        val episodesObserver = Observer<Array<Episode>> { episodes ->
             viewAdapter.updateDataSet(episodes)
             viewAdapter.notifyDataSetChanged()
         }
 
-        model.episodes.observe(this, nameObserver)
+        model.episodes.observe(this, episodesObserver)
     }
 }
