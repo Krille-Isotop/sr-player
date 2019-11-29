@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +23,7 @@ class MainFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
+    private val model: EpisodesViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,13 +35,13 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val context = activity!!.applicationContext
 
         ApiClient.getEpisodes(context, { response ->
             val moshi = Moshi.Builder().build()
             val jsonAdapter = moshi.adapter(Episodes::class.java)
             val episodes = jsonAdapter.fromJson(response)?.episodes
+            model.episodes.value = episodes
 
             viewManager = LinearLayoutManager(context)
             viewAdapter = EpisodeAdapter(episodes!!, "Lägg till i lista", { episode ->
