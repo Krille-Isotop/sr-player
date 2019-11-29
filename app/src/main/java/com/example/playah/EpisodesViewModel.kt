@@ -11,24 +11,25 @@ class EpisodesViewModel(application: Application) : AndroidViewModel(application
         MutableLiveData<Array<Episode>>()
     }
 
+    val filteredEpisodes: MutableLiveData<Array<Episode>> by lazy {
+        MutableLiveData<Array<Episode>>()
+    }
+
     init {
         ApiClient.getEpisodes(application.applicationContext, { response ->
             val moshi = Moshi.Builder().build()
             val jsonAdapter = moshi.adapter(Episodes::class.java)
             episodes.value = jsonAdapter.fromJson(response)?.episodes
-
         }, { e -> Log.d(EpisodesViewModel::class.java.simpleName, e.message) })
+
+        filteredEpisodes.value = arrayOf<Episode>()
     }
 
     fun filterEpisodes(episodesToInclude: List<ListItem>) {
-        episodes.postValue(episodes.value?.filter { episode ->
+        val newFilteredEpisodes = episodes.value?.filter { episode ->
             episodesToInclude.any { (id) -> id == episode.id }
-        }?.toTypedArray())
-    }
+        }?.toTypedArray()
 
-    fun deleteEpisode(id: Int) {
-        episodes.postValue(episodes.value?.filter { episode ->
-            episode.id != id
-        }?.toTypedArray())
+        filteredEpisodes.postValue(newFilteredEpisodes)
     }
 }

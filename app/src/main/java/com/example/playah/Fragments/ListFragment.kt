@@ -3,14 +3,12 @@ package com.example.playah.Fragments
 
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,24 +28,22 @@ class ListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
+    fun refreshEpisodes() {
+        AsyncTask.execute {
+            val episodesToInclude = AppDatabase.getInstance(activity!!.applicationContext).listItemDao().getAll()
+            model.filterEpisodes(episodesToInclude)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val context = activity!!.applicationContext
-
-        ApiClient.getEpisodes(context, { response ->
-            AsyncTask.execute {
-                val episodesToInclude = AppDatabase.getInstance(context).listItemDao().getAll()
-                model.filterEpisodes(episodesToInclude)
-            }
-        }, { e -> Log.d("error", e.message) })
 
         viewManager = LinearLayoutManager(context)
-        viewAdapter = EpisodeAdapter(model.episodes.value!!, "Ta bort från lista", { episode ->
+        viewAdapter = EpisodeAdapter(model.filteredEpisodes.value!!, "Ta bort från lista", { episode ->
             AsyncTask.execute {
-                val dao = AppDatabase.getInstance(context).listItemDao()
+                val dao = AppDatabase.getInstance(activity!!.applicationContext).listItemDao()
                 dao.delete(episode.id)
-
-                model.deleteEpisode(episode.id)
+                refreshEpisodes()
             }
         }, { uri ->
             findNavController().navigate(ListFragmentDirections.actionListFragmentToEpisodeFragment(uri))
@@ -63,6 +59,7 @@ class ListFragment : Fragment() {
             viewAdapter.notifyDataSetChanged()
         }
 
-        model.episodes.observe(this, episodesObserver)
+        model.filteredEpisodes.observe(this, episodesObserver)
+        refreshEpisodes()
     }
 }
