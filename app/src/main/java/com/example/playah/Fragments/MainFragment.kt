@@ -35,7 +35,7 @@ class MainFragment : Fragment() {
         val episodesObserver = Observer<Array<Episode>> { episodes ->
             if (episodes.size > 0) {
                 viewManager = LinearLayoutManager(context)
-                viewAdapter = EpisodeAdapter(model.episodes.value!!, "Lägg till i lista", { episode ->
+                viewAdapter = EpisodeAdapter(model.episodes.value!!, getString(R.string.add_to_list), { episode ->
                     AsyncTask.execute {
                         val dao = AppDatabase.getInstance(context).listItemDao()
                         if (dao.getById(episode.id) == null) {

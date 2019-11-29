@@ -40,7 +40,7 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewManager = LinearLayoutManager(context)
-        viewAdapter = EpisodeAdapter(model.filteredEpisodes.value!!, "Ta bort från lista", { episode ->
+        viewAdapter = EpisodeAdapter(model.filteredEpisodes.value!!, getString(R.string.remove_from_list), { episode ->
             AsyncTask.execute {
                 val dao = AppDatabase.getInstance(appContext).listItemDao()
                 dao.delete(episode.id)
