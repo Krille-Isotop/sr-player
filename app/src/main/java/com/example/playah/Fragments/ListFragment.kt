@@ -20,6 +20,7 @@ class ListFragment : Fragment() {
     private lateinit var viewAdapter: EpisodeAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private val model: EpisodesViewModel by activityViewModels()
+    private val appContext = activity!!.applicationContext
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +31,7 @@ class ListFragment : Fragment() {
 
     fun refreshEpisodes() {
         AsyncTask.execute {
-            val episodesToInclude = AppDatabase.getInstance(activity!!.applicationContext).listItemDao().getAll()
+            val episodesToInclude = AppDatabase.getInstance(appContext).listItemDao().getAll()
             model.filterEpisodes(episodesToInclude)
         }
     }
@@ -41,7 +42,7 @@ class ListFragment : Fragment() {
         viewManager = LinearLayoutManager(context)
         viewAdapter = EpisodeAdapter(model.filteredEpisodes.value!!, "Ta bort från lista", { episode ->
             AsyncTask.execute {
-                val dao = AppDatabase.getInstance(activity!!.applicationContext).listItemDao()
+                val dao = AppDatabase.getInstance(appContext).listItemDao()
                 dao.delete(episode.id)
                 refreshEpisodes()
             }
