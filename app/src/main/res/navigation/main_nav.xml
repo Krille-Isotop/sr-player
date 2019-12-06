@@ -9,7 +9,7 @@
             android:id="@+id/mainFragment"
             android:name="com.example.playah.Fragments.MainFragment"
             android:label="fragment_main"
-            tools:layout="@layout/fragment_main" >
+            tools:layout="@layout/fragment_main">
         <action
                 android:id="@+id/action_mainFragment_to_listFragment"
                 app:destination="@id/listFragment" />
@@ -21,7 +21,7 @@
             android:id="@+id/listFragment"
             android:name="com.example.playah.Fragments.ListFragment"
             android:label="fragment_list"
-            tools:layout="@layout/fragment_list" >
+            tools:layout="@layout/fragment_list">
         <action
                 android:id="@+id/action_listFragment_to_episodeFragment"
                 app:destination="@id/episodeFragment" />
@@ -30,9 +30,12 @@
             android:id="@+id/episodeFragment"
             android:name="com.example.playah.Fragments.EpisodeFragment"
             android:label="fragment_episode"
-            tools:layout="@layout/fragment_episode" >
+            tools:layout="@layout/fragment_episode">
         <argument
                 android:name="uri"
                 app:argType="string" />
     </fragment>
+    <action
+            android:id="@+id/action_global_listFragment"
+            app:destination="@id/listFragment" />
 </navigation>

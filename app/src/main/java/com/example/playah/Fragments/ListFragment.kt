@@ -1,6 +1,7 @@
 package com.example.playah.Fragments
 
 
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,7 +21,7 @@ class ListFragment : Fragment() {
     private lateinit var viewAdapter: EpisodeAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private val model: EpisodesViewModel by activityViewModels()
-    private val appContext = activity!!.applicationContext
+    private lateinit var appContext: Context
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +39,7 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        appContext = activity!!.applicationContext
 
         viewManager = LinearLayoutManager(context)
         viewAdapter = EpisodeAdapter(model.filteredEpisodes.value!!, getString(R.string.remove_from_list), { episode ->

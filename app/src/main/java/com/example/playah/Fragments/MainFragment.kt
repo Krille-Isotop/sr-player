@@ -54,10 +54,7 @@ class MainFragment : Fragment() {
         }
 
         model.episodes.observe(this, episodesObserver)
-
-        goToListButton.setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToListFragment()
-            findNavController().navigate(action)
-        }
     }
+
+
 }
