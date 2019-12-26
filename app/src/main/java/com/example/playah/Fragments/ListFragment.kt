@@ -39,7 +39,7 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        appContext = activity!!.applicationContext
+        appContext =  requireNotNull(activity).applicationContext
 
         viewManager = LinearLayoutManager(context)
         viewAdapter = EpisodeAdapter(model.filteredEpisodes.value!!, getString(R.string.remove_from_list), { episode ->
