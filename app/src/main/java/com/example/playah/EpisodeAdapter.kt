@@ -5,6 +5,9 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.episode_row.view.*
@@ -17,7 +20,32 @@ class EpisodeAdapter(
     private val navigateOnClickListener: (uri: String) -> Unit
 ) :
     RecyclerView.Adapter<EpisodeAdapter.EpisodeViewHolder>() {
-    class EpisodeViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+
+    class EpisodeViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val imageView: ImageView = view.imageView
+        val episodeTitle: TextView = view.episodeTitle
+        val episodeDescription: TextView = view.episodeDescription
+        val listButton: Button = view.listButton
+
+        fun bind(
+            episode: Episode,
+            buttonText: String,
+            addToListOnClickListener: (episode: Episode) -> Unit,
+            navigateOnClickListener: (uri: String) -> Unit
+        ) {
+            episodeTitle.text = episode.title
+            episodeDescription.text = episode.description
+            listButton.text = buttonText
+
+            Glide.with(view)
+                .load(episode.imageurl)
+                .into(imageView)
+
+            listButton.setOnClickListener { addToListOnClickListener(episode) }
+            view.setOnClickListener { navigateOnClickListener(episode.downloadpodfile.url) }
+        }
+    }
+
     private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeViewHolder {
@@ -29,17 +57,12 @@ class EpisodeAdapter(
 
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
         val episode = dataSet[position]
-
-        holder.view.episodeTitle.text = episode.title
-        holder.view.episodeDescription.text = episode.description
-        holder.view.listButton.text = buttonText
-
-        Glide.with(holder.view)
-            .load(episode.imageurl)
-            .into(holder.view.imageView)
-
-        holder.view.listButton.setOnClickListener {  addToListOnClickListener(episode) }
-        holder.view.setOnClickListener { navigateOnClickListener(episode.downloadpodfile.url) }
+        holder.bind(
+            episode,
+            buttonText,
+            addToListOnClickListener,
+            navigateOnClickListener
+        )
     }
 
     fun updateDataSet(newEpisodes: Array<Episode>) {

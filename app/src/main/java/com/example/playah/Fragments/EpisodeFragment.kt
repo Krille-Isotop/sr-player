@@ -17,7 +17,7 @@ import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_episode.*
 
 class EpisodeFragment : Fragment() {
-    val player by lazy { ExoPlayerFactory.newSimpleInstance(activity?.applicationContext) }
+    val player by lazy { ExoPlayerFactory.newSimpleInstance(activity?.applicationContext!!) }
     val args: EpisodeFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -32,7 +32,7 @@ class EpisodeFragment : Fragment() {
         sr_player_view.player = player
         val uri = args.uri
 
-        val dataSourceFactory = DefaultDataSourceFactory(activity?.applicationContext, Util.getUserAgent(activity?.applicationContext, "com.example.playah"))
+        val dataSourceFactory = DefaultDataSourceFactory(activity?.applicationContext, Util.getUserAgent(activity?.applicationContext!!, "com.example.playah"))
         val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(uri))
         player.prepare(videoSource)
     }
