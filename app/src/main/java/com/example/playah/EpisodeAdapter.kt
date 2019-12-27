@@ -44,15 +44,18 @@ class EpisodeAdapter(
             listButton.setOnClickListener { addToListOnClickListener(episode) }
             view.setOnClickListener { navigateOnClickListener(episode.downloadpodfile.url) }
         }
+
+        companion object {
+            fun from(parent: ViewGroup): EpisodeViewHolder {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.episode_row, parent, false) as View
+                return EpisodeViewHolder(view)
+            }
+        }
     }
 
-    private lateinit var context: Context
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeViewHolder {
-        context = parent.context
-        val view = LayoutInflater.from(context)
-            .inflate(R.layout.episode_row, parent, false) as View
-        return EpisodeViewHolder(view)
+        return EpisodeViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
