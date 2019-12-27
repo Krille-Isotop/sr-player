@@ -15,8 +15,7 @@ import com.example.playah.*
 import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: EpisodeAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private val model: EpisodesViewModel by activityViewModels()
 
@@ -35,7 +34,7 @@ class MainFragment : Fragment() {
         val episodesObserver = Observer<Array<Episode>> { episodes ->
             if (episodes.size > 0) {
                 viewManager = LinearLayoutManager(context)
-                viewAdapter = EpisodeAdapter(model.episodes.value!!, getString(R.string.add_to_list), { episode ->
+                viewAdapter = EpisodeAdapter(getString(R.string.add_to_list), { episode ->
                     AsyncTask.execute {
                         val dao = AppDatabase.getInstance(context).listItemDao()
                         if (dao.getById(episode.id) == null) {
@@ -45,6 +44,8 @@ class MainFragment : Fragment() {
                 }, { uri ->
                     findNavController().navigate(MainFragmentDirections.actionMainFragmentToEpisodeFragment(uri))
                 })
+
+                viewAdapter.submitList(episodes.toMutableList())
 
                 episodeRecyclerView.apply {
                     layoutManager = viewManager

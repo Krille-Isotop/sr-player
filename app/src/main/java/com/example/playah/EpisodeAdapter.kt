@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.episode_row.view.*
 
 
 class EpisodeAdapter(
-    private var dataSet: Array<Episode>,
     private val buttonText: String,
     private val addToListOnClickListener: (episode: Episode) -> Unit,
     private val navigateOnClickListener: (uri: String) -> Unit
 ) :
-    RecyclerView.Adapter<EpisodeAdapter.EpisodeViewHolder>() {
+    ListAdapter<Episode, EpisodeAdapter.EpisodeViewHolder>(EpisodeDiffCallback()) {
 
     class EpisodeViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.imageView
@@ -59,7 +60,7 @@ class EpisodeAdapter(
     }
 
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
-        val episode = dataSet[position]
+        val episode = getItem(position)
         holder.bind(
             episode,
             buttonText,
@@ -67,11 +68,9 @@ class EpisodeAdapter(
             navigateOnClickListener
         )
     }
+}
 
-    fun updateDataSet(newEpisodes: Array<Episode>) {
-        dataSet = newEpisodes
-        notifyDataSetChanged()
-    }
-
-    override fun getItemCount() = dataSet.size
+class EpisodeDiffCallback : DiffUtil.ItemCallback<Episode>() {
+    override fun areContentsTheSame(oldItem: Episode, newItem: Episode) = oldItem == newItem
+    override fun areItemsTheSame(oldItem: Episode, newItem: Episode) = oldItem.id == newItem.id
 }
